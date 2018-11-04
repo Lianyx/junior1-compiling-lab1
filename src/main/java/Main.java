@@ -1,5 +1,9 @@
+import RE.RENode;
+import RE.Regex;
+
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,6 +22,7 @@ public class Main {
             "int state = 0;\n" +
             "\n" +
             "int yylex() {\n" +
+            "    int begin = 0;" +
             "    while (1) {\n" +
             "        char c = input[ptr++];\n" +
             "        switch (state) {\n";
@@ -68,15 +73,29 @@ public class Main {
         try {
             // input
             Scanner scanner = new Scanner(new File("./src/main/resources/test.l"));
-            while (!"%%".equals(scanner.nextLine())) ;
+            Map<String, String> reDef = new HashMap<>();
+
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.isEmpty()) continue;
+                if ("%%".equals(line)) break;
+
+                String[] split = line.split(" ");
+                reDef.put(split[0], split[1].trim());
+            }
 
             while (scanner.hasNextLine()) { // 先不支持分行寫，也不管{{}}這種
                 String line = scanner.nextLine();
                 if (line.isEmpty()) continue; // 先不管引号，也不管{digits這类}
 
                 int start = 1, end = line.indexOf("\"", 1);
-                String regex = line.substring(start, end);
-                regexes.add(regex);
+                String[] regex = {line.substring(start, end)};
+                reDef.forEach((from, to) -> {
+                    from = "\\{" + from + "\\}";
+                    to = '(' + to + ')';
+                    regex[0] = regex[0].replaceAll(from, to);
+                });
+                regexes.add(regex[0]);
 
                 line = line.substring(end);
                 start = line.indexOf("{") + 1;
@@ -86,8 +105,11 @@ public class Main {
             }
 
             // process
-            List<NFA> NFAs = regexes.stream().map(r -> NFA.postRegexToNFA(Regex.toPostNotation(r)))
-                    .collect(Collectors.toList());
+            List<NFA> NFAs = regexes.stream().map(r -> {
+                List<RENode> postRE = Regex.toPostNotation(r);
+                return NFA.postRegexToNFA(postRE);
+            }).collect(Collectors.toList());
+
             NFA nfa = NFA.combine(NFAs, NFA_end_states);
             DFA dfa = DFA.NFA2DFA(nfa);
 
@@ -108,19 +130,18 @@ public class Main {
                             thisCase.append("else ");
                         }
 
-                        thisCase.append("if (\'").append(c).append("\' == c) { state = ")
+                        thisCase.append("if (\'").append(Regex.escape(c)).append("\' == c) { state = ")
                                 .append(next_i).append("; }\n");
                     });
                     thisCase.append("else ");
                 }
-                thisCase.append("{ ptr--; "); // TODO error直接报错甩锅走人了，ptr加不加无所谓，所以还沒改…
-
                 Set<Integer> nfa_states = dfa.NFA_states.get(i);
                 int lineNo = lineNo(nfa_states);
                 if (-1 == lineNo) {
-                    thisCase.append(error);
+                    thisCase.append(" { " + error);
                     thisCase.append(" return -1; } \n");
                 } else {
+                    thisCase.append("{ ptr--; char lexeme[25]; memcpy(lexeme, &input[begin], ptr - begin); lexeme[ptr-begin] = 0; begin = ptr; ");
                     thisCase.append(actions.get(lineNo));
                     thisCase.append(" state = 0;");
                     thisCase.append(" if (EOF == c) return 1; } \n");
@@ -131,8 +152,15 @@ public class Main {
             }
             output.append(outputAfterSwitchCase);
 
-            System.out.println(output.toString());
-        } catch (FileNotFoundException e) {
+            File outputFile = new File("./lyx.ee.c");
+            if (outputFile.createNewFile()) {
+                System.out.println("file \"lyx.ee.c\" already exists");
+            }
+
+            PrintWriter printWriter = new PrintWriter(outputFile);
+            printWriter.println(output.toString());
+            printWriter.flush();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

@@ -1,3 +1,5 @@
+import RE.RENode;
+import util.Constants;
 import util.Util;
 
 import java.util.*;
@@ -23,29 +25,30 @@ public class NFA implements Constants {
      * all static methods thereafter
      */
 
-    static NFA postRegexToNFA(String postRegex) {
+    static NFA postRegexToNFA(List<RENode> postRegex) {
         Deque<NFA> stack = new LinkedList<>();
-        for (int i = 0; i < postRegex.length(); i++) {
-            char c = postRegex.charAt(i);
+        for (RENode reNode : postRegex) {
+            char c = reNode.ch;
             NFA n1, n2;
-            switch (c) {
-                case DOT:
-                    n2 = stack.pop();
-                    n1 = stack.pop();
-                    stack.push(append(n1, n2));
-                    break;
-                case VERTICAL_LINE:
-                    n2 = stack.pop();
-                    n1 = stack.pop();
-                    stack.push(or(n1, n2));
-                    break;
-                case ASTERISK:
-                    n1 = stack.pop();
-                    stack.push(asterisk(n1));
-                    break;
-                default: // c from Σ
-                    stack.push(primitiveNFA(c));
-                    break;
+            if (RENode.Type.OP == reNode.type) {
+                switch (c) {
+                    case DOT:
+                        n2 = stack.pop();
+                        n1 = stack.pop();
+                        stack.push(append(n1, n2));
+                        break;
+                    case VERTICAL_LINE:
+                        n2 = stack.pop();
+                        n1 = stack.pop();
+                        stack.push(or(n1, n2));
+                        break;
+                    case ASTERISK:
+                        n1 = stack.pop();
+                        stack.push(asterisk(n1));
+                        break;
+                }
+            } else {
+                stack.push(primitiveNFA(c));
             }
         }
         return stack.pop();
@@ -122,7 +125,7 @@ public class NFA implements Constants {
         // Step3: 加上n2
         nfa.table.addAll(copyAndShiftTable(
                 n2.table.subList(1, n2.table.size()),
-                n1.table.size()
+                n1.table.size() - 1
         ));
 
         return nfa;

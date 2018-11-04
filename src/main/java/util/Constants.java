@@ -1,3 +1,5 @@
+package util;
+
 public interface Constants {
     char DOT = '·';
     char L_PARA = '(';

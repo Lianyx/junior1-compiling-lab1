@@ -1,0 +1,40 @@
+saved word: public
+saved word: class
+identifier: Point
+delimiter: (
+delimiter: )
+delimiter: {
+saved word: public
+saved word: static
+saved word: void
+identifier: main
+delimiter: (
+saved word: String
+delimiter: [
+delimiter: ]
+identifier: args
+delimiter: )
+delimiter: {
+saved word: int
+identifier: i
+operater: =
+number: 3
+delimiter: ;
+saved word: if
+delimiter: (
+identifier: i
+operater: !=
+number: 1
+identifier: fdsa
+delimiter: )
+delimiter: {
+identifier: i
+operater: *=
+operater: =
+operater: *
+identifier: j
+delimiter: ;
+delimiter: }
+delimiter: }
+delimiter: }
+Warning: an error occurs!!!

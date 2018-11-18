@@ -19,4 +19,8 @@ public class Util {
     public static Set<Integer> intsToSet(int... ints) {
         return IntStream.of(ints).boxed().collect(Collectors.toSet());
     }
+
+    public static List<Integer> intsToList(int... ints) {
+        return IntStream.of(ints).boxed().collect(Collectors.toList());
+    }
 }

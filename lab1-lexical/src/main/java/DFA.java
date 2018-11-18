@@ -10,9 +10,6 @@ public class DFA implements Constants {
     List<Set<Integer>> NFA_states = new ArrayList<>(); // 分別通過index相對應…
     // 突然感覺之前全部都應該用set的
 
-    private DFA() {
-    }
-
     @Override
     public String toString() {
         return "DFA{" +
@@ -23,7 +20,7 @@ public class DFA implements Constants {
 
     /**
      * all static methods thereafter
-     * */
+     */
     public static DFA NFA2DFA(NFA nfa) {
         DFA dfa = new DFA();
 
@@ -67,6 +64,41 @@ public class DFA implements Constants {
         return dfa;
     }
 
+    public static DFA minimizeState(DFA dfa, List<List<Integer>> dd) {
+        for (List<Integer> d1: dd) {
+            List<List<Integer>> newGroups1 = new ArrayList<>();
+            // 都放在一起一定会有重复计算。但是。。应该会好寫一点吧
+            // 每一波都只是横向的，只借助上一汉的分类來判断是否相等。
+            // 每一波的生成结果是另一個List<List<Integer>>
+
+            loop1:
+            for (int i : d1) {
+                if (newGroups1.isEmpty()) {
+                    newGroups1.add(intsToList(i));
+                    continue;
+                }
+                for (List<Integer> newGroup : newGroups1) {
+                    int j = newGroup.get(0);
+                    if (equivalentState(i, j, dfa, dd)) {
+                        newGroup.add(j);
+                        continue loop1;
+                    }
+                }
+
+                newGroups1.add(intsToList(i));
+            }
+        }
+
+        return new DFA();
+    }
+
+    private static boolean equivalentState(int i, int j, DFA dfa, List<List<Integer>> dd) {
+        return false;
+    }
+
+    /**
+     * all private methods thereafter
+     */
     private static Set<Integer> epsilonClosure(Set<Integer> t, NFA nfa) {
         ArrayList<Integer> list = new ArrayList<>(t);
 

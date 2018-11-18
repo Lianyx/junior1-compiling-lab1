@@ -75,7 +75,7 @@ public class NFA implements Constants {
 
 
     /**
-     * private
+     * all private functions thereafter
      */
     private static NFA primitiveNFA(char c) {
         NFA nfa = new NFA();

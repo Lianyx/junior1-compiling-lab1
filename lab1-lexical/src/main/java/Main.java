@@ -114,16 +114,16 @@ public class Main {
             NFA nfa = NFA.combine(NFAs, NFA_end_states);
             DFA dfa = DFA.NFA2DFA(nfa);
 
-            List<Integer> d1 = new ArrayList<>(), d2 = new ArrayList<>();
-            for (int i = 1; i <= dfa.NFA_states.size(); i++) {
-                if (-1 == lineNo(dfa.NFA_states.get(i))) {
-                    d1.add(i);
-                } else {
-                    d2.add(i);
-                }
-            }
-
-            dfa = DFA.minimizeState(dfa, Arrays.asList(d1, d2));
+//            List<Integer> d1 = new ArrayList<>(), d2 = new ArrayList<>();
+//            for (int i = 1; i <= dfa.NFA_states.size(); i++) { // 這種错误嗎。。。
+//                if (-1 == lineNo(dfa.NFA_states.get(i))) {
+//                    d1.add(i);
+//                } else {
+//                    d2.add(i);
+//                }
+//            }
+//
+//            dfa = DFA.minimizeState(dfa, Arrays.asList(d1, d2));
 
             // output
             StringBuilder output = new StringBuilder(outputBeforeSwitchCase);

@@ -1,0 +1,14 @@
+%token ID
+
+%%
+expr : expr '+' term
+     | term
+     ;
+
+term : term '*' factor
+     | factor
+     ;
+
+factor : '(' expr ')'
+       | ID
+       ;

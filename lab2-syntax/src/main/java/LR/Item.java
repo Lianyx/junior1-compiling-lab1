@@ -10,9 +10,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Item {
-    Production production;
+    public Production production;
+    public Set<Symbol> afters;
     int dot_pos;
-    Set<Symbol> afters;
+
 
     Item(Production production, Set<Symbol> afters) {
         this.production = production;
@@ -40,7 +41,7 @@ public class Item {
     }
 
 
-    private boolean isEnd() {
+    public boolean isEnd() {
         return dot_pos == production.body.size();
     }
 

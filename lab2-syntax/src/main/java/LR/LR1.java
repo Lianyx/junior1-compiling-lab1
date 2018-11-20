@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import static grammer.Grammar.*;
 import static util.Util.*;
 
-public class LR {
+public class LR1 {
     // 构建好之後，所有state都在這裡，整个程序中不会出現其他state的reference。
     public static List<State> LR_automation = new ArrayList<>();
 
@@ -41,7 +41,7 @@ public class LR {
     }
 
     // 應該只是为了toString
-    static int getStateNo(State state) {
+    public static int getStateNo(State state) {
         return LR_automation.indexOf(state);
     }
 
@@ -70,12 +70,15 @@ public class LR {
                 for (Production production : all_productions) { // 其实可以只做一遍，然後全部存在symbol裡
                     if (target_head.equals(production.head)) {
                         Item potential_itm = new Item(production, computeInStateLookafter(itm));
-                        if (result.stream().noneMatch(i -> i.production == potential_itm.production
-                                && i.dot_pos == potential_itm.dot_pos)) {
-                            result.add(potential_itm);
-                        } else { // 有可能只是往裡面加一些東西
-                            Item old_itm = result.get(result.indexOf(potential_itm));
+
+                        Optional<Item> any = result.stream().filter(i -> i.production == potential_itm.production
+                                && i.dot_pos == potential_itm.dot_pos).findAny();
+
+                        if (any.isPresent()) {
+                            Item old_itm = any.get();
                             old_itm.afters.addAll(potential_itm.afters);
+                        } else { // 有可能只是往裡面加一些東西
+                            result.add(potential_itm);
                         }
                     }
                 }

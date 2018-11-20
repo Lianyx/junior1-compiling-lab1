@@ -68,7 +68,7 @@ public class ParserGenerator {
                     .map(e -> String.format("if (\"%s\".equals(chr)) {\n" +
                             "ptr++;\n" +
                             "state_No_stack.push(%d);\n" +
-                            "}", e.getKey().lexeme, LR1.getStateNo(e.getValue())))
+                            "}", e.getKey().name, LR1.getStateNo(e.getValue())))
                     .reduce((a, b) -> a + " else " + b)
                     .orElse("");
 
@@ -82,11 +82,11 @@ public class ParserGenerator {
                                     "state_No_stack.push(GOTO(state_No_stack.peek(), \"%s\"));\n" +
                                     "}",
                             itm.afters.stream().map(
-                                    s -> String.format("\"%s\".equals(chr)", s.lexeme)
+                                    s -> String.format("\"%s\".equals(chr)", s.name)
                             ).reduce((a, b) -> a + " || " + b).orElse(""), // 不可能走到orElse
                             itm.production.body.size(),
                             itm.production.toString(),
-                            itm.production.head.lexeme))
+                            itm.production.head.name))
                     .reduce((a, b) -> a + " else " + b)
                     .orElse("");
 
@@ -135,7 +135,7 @@ public class ParserGenerator {
                     .filter(e -> SymbolType.nonterminal == e.getKey().type)
                     .map(e -> String.format("if (\"%s\".equals(nonterminal)) {\n" +
                             "return %d;\n" +
-                            "}\n", e.getKey().lexeme, LR1.getStateNo(e.getValue())))
+                            "}\n", e.getKey().name, LR1.getStateNo(e.getValue())))
                     .reduce((a, b) -> a + b)
                     .orElse("");
 

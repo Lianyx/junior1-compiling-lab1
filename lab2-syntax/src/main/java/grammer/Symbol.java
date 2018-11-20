@@ -1,17 +1,17 @@
 package grammer;
 
 public class Symbol {
-    public String lexeme;
+    public String name;
     public SymbolType type;
 
-    Symbol(String lexeme, SymbolType type) {
-        this.lexeme = lexeme;
+    Symbol(String name, SymbolType type) {
+        this.name = name;
         this.type = type;
     }
 
     @Override
     public String toString() {
-        return lexeme;
+        return name;
     }
 
     // equal就是reference的equal，不要override

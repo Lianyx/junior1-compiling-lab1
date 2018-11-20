@@ -20,7 +20,7 @@ public class LR1 {
         State state_0 = new State(kernal_of_state_0, inStateExtension(kernal_of_state_0));
         LR_automation.add(state_0);
 
-        // 这个明明不能换，ide报的不行
+        // 这个明明不能换，ide报错报错了
         for (int i = 0; i < LR_automation.size(); i++) {
             State state_i = LR_automation.get(i);
 

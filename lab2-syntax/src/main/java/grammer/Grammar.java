@@ -191,7 +191,7 @@ public class Grammar {
         }
 
         for (Symbol symbol : all_symbols) {
-            if (symbol.lexeme.equals(str) && symbol.type == type) {
+            if (symbol.name.equals(str) && symbol.type == type) {
                 // 所以穷极无聊之人可以用G', ε，$作为自己定义的nonterminal了嗎？
                 return symbol;
             }

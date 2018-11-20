@@ -30,8 +30,4 @@ public class State {
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))
                 + '}';
     }
-
-    /**
-     * all private methods thereafter
-     */
 }
